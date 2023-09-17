@@ -7,12 +7,19 @@
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <h1>Be Our Guest </h1>
-  <button id="button" onclick="toggleStartStop()">Click to Speak</button>
-  <div style="border:dotted;padding:10px">
-    <span id="finalOutput"></span>
-    <span id="interimOutput" style="color:grey"></span>
-  </div>
+  <header>
+    <h1>Welcome to Be Our Guest</h1>
+  </header>
+  <main>
+    <button id="button" onclick="toggleStartStop()">Click to Speak</button>
+    <div class="output-container">
+      <span id="finalOutput"></span>
+      <span id="interimOutput" class="interim-text"></span>
+    </div>
+  </main>
+  <footer>
+    <p>&copy; 2023 Be Our Guest</p>
+  </footer>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.1.2/socket.io.js"></script>
   <script src="script.js"></script>
 </body>
