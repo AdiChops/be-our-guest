@@ -1,4 +1,5 @@
 import serial
+import requests
 
 # import serial.tools.list_ports as ports
 
@@ -15,4 +16,7 @@ while True:
             break
 ser.close()
 # api call
-print("made an api call")
+url = 'http://localhost:5000/ready'  # Replace with the URL you want to send the request to
+
+# Send a GET request
+response = requests.get(url, headers={"Content-Type": "application/json; charset=utf-8"})

@@ -6,3 +6,7 @@ flask
 flask_session
 datetime
 python-dotenv
+flask-socketio
+eventlet
+requests
+serial

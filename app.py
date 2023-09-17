@@ -1,5 +1,6 @@
 from flask import Flask, session, request, jsonify
 from flask_session import Session
+from flask_socketio import SocketIO, emit
 import cohere
 from datetime import timedelta
 import os
@@ -178,6 +179,13 @@ app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(minutes=30)
 app.config['SECRET_KEY'] = 'put-our-service-to-the-test'
 
 Session(app)
+socketio = SocketIO(app)
+
+@app.route('/ready', methods=['GET'])
+def ready():
+    socketio.emit('receive_requests', {})
+    print("here")
+    return "success"
 
 @app.route('/sales', methods=['POST'])
 def sales():
@@ -236,4 +244,4 @@ def sales():
     return jsonify({"response": answer, "conversation_id": conversation_id})
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    socketio.run(app, debug=True)
