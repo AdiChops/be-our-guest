@@ -1,11 +1,12 @@
-from flask import Flask, request, jsonify
-import flask_cors
-import requests
+from flask import Flask, session, request, jsonify
+from flask_session import Session
 import cohere
+from datetime import timedelta
 
 #co = cohere.Client('EQ7PeKCPBKHkDtXnW6mN06emJjMXOcimcbmnN4FG') #545
 co = cohere.Client('e2pkgemlua60z6PhTar7qndShS7JfTncoroZlwcU') #gahir
 
+convId = 0
 
 ######-------Menu-------######
 starters = f"""C6STARTERS 2
@@ -164,8 +165,16 @@ Pineapple Head
 
 app = Flask(__name__)
 
-# In-memory storage for conversation IDs
-conversation_ids = {}
+app.config['SESSION_TYPE'] = 'filesystem'
+
+app.config['SESSION_PERMANENT'] = True
+app.config['SESSION_USE_SIGNER'] = True
+
+app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(minutes=30)
+
+app.config['SECRET_KEY'] = 'put-our-service-to-the-test'
+
+Session(app)
 
 @app.route('/sales', methods=['POST'])
 def sales():
@@ -174,19 +183,15 @@ def sales():
     global starters
     global mains
     global shisha
+    global convId
 
-    user_id = user_data.get('user_id', None)  # Assuming each user has a unique user_id
-    chat_history = user_data.get('chat_history', [])
-    message = user_data.get('message', "")
-
-    
+    message = user_data.get('message', "")    
 
     # Retrieve or create a new conversation_id
-    conversation_id = conversation_ids.get(user_id, None)
-    if conversation_id is None:
-        # Generate a new conversation_id (you can use UUID or any other method)
-        conversation_id = "new_conversation_id"
-        conversation_ids[user_id] = conversation_id
+    if session.get('convId') is None:
+        session['convId'] = f"conversation{convId}"
+        convId += 1
+    conversation_id = session['convId']
 
     preamble = f"""Your name is Dwight, you are the Host of a popular restaurant, your job is to recommend different items of varying price points to customers \
                 Based on the Starters: {starters}, Mains: {mains}, and Shisha: {shisha} \
@@ -218,7 +223,6 @@ def sales():
     response = co.chat(
         message,
         temperature=0.4,
-        chat_history=chat_history,
         prompt_truncation="AUTO",
         preamble_override=preamble,
         stream=False,
@@ -226,13 +230,7 @@ def sales():
     )
     answer = response.text
 
-    # Update chat history
-    user_message = {"user_name": "User", "text": message}
-    bot_message = {"user_name": "Chatbot", "text": answer}
-    chat_history.append(user_message)
-    chat_history.append(bot_message)
-
-    return jsonify({"response": answer, "chat_history": chat_history, "conversation_id": conversation_id})
+    return jsonify({"response": answer, "conversation_id": conversation_id})
 
 if __name__ == "__main__":
     app.run(debug=True)
