@@ -1,10 +1,15 @@
-
 # Use the official lightweight Python image.
 # https://hub.docker.com/_/python
 FROM python:3.11-slim
 
 # Allow statements and log messages to immediately appear in the logs
 ENV PYTHONUNBUFFERED True
+
+# Accept the API key as a build argument
+ARG COHERE_API_KEY
+
+# Set the API key as an environment variable
+ENV COHERE_API_KEY=$COHERE_API_KEY
 
 # Copy local code to the container image.
 ENV APP_HOME /app
