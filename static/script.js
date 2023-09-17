@@ -54,6 +54,7 @@ socket.on('receive_requests', function(data) {
   function toggleStartStop() {
     if (recognizing) {
       recognition.stop();
+      sendOrder();
       reset();
     } else {
       recognition.start();
@@ -71,16 +72,21 @@ socket.on('receive_requests', function(data) {
   }
   
   function sendOrder() {
-    const apiUrl = 'https://jsonplaceholder.typicode.com/posts/1';
-    return fetch(apiUrl)
+    console.log(document.getElementById("finalOutput").textContent)
+    const apiUrl = 'https://localhost:5000/sales';
+    return fetch(apiUrl, { method: 'POST', headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      }, body: JSON.stringify({ "message": document.getElementById("finalOutput").textContent})})
       .then(response => {
         if (!response.ok) {
           throw new Error('Network response was not ok');
         }
-        return response.text(); // Return the response as text
+        return response.json(); // Return the response as text
       })
-      .then(textData => {
-        return textData; // Return the text data from the API
+      .then(data => {
+        document.getElementById("coResponse").innerHTML += "<br/><hr/>Response: " + data["response"];
+        return data["response"]; // Return the text data from the API
       })
       .catch(error => {
         console.error('API call error:', error);
