@@ -1,6 +1,6 @@
 from flask import Flask, session, request, jsonify
 from flask_session import Session
-from flask_socketio import SocketIO, emit
+from flask_socketio import SocketIO
 import cohere
 from datetime import timedelta
 import os
