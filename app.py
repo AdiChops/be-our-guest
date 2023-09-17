@@ -2,9 +2,12 @@ from flask import Flask, session, request, jsonify
 from flask_session import Session
 import cohere
 from datetime import timedelta
+import os
+from dotenv import load_dotenv
 
-#co = cohere.Client('EQ7PeKCPBKHkDtXnW6mN06emJjMXOcimcbmnN4FG') #545
-co = cohere.Client('e2pkgemlua60z6PhTar7qndShS7JfTncoroZlwcU') #gahir
+load_dotenv()
+api_key = os.environ.get("COHERE_API_KEY")
+co = cohere.Client(api_key)
 
 convId = 0
 
