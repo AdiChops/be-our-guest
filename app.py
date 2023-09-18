@@ -184,7 +184,6 @@ socketio = SocketIO(app)
 @app.route('/ready', methods=['GET'])
 def ready():
     socketio.emit('receive_requests', {})
-    print("here")
     return "success"
 
 @app.route('/sales', methods=['POST'])

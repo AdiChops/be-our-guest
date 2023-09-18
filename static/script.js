@@ -9,9 +9,15 @@ const orderDonePhrases = [
     "I won't need anything else"
   ];
 
+let doneReset = () =>{
+    reset();
+    sendOrder(document.getElementById("finalOutput").textContent);
+}
+
 let socket = io.connect('http://localhost:5000');
 socket.on('receive_requests', function(data) {
     // Handle the received notification data here
+    // sendOrder("hi");
     toggleStartStop();
 });
 
@@ -21,7 +27,7 @@ socket.on('receive_requests', function(data) {
   recognition.continuous = true;
   recognition.interimResults = true;
   recognition.lang = "en-US";
-  recognition.onend = reset;
+  recognition.onend = doneReset;
   
   recognition.onresult = (event) => {
     let finalTranscript = "";
@@ -38,11 +44,10 @@ socket.on('receive_requests', function(data) {
     document.getElementById("finalOutput").innerHTML = finalTranscript;
   
     if (orderDonePhrases.some(orderPhrase => finalTranscript.includes(orderPhrase))) {
-      // call cohere api
-      sendOrder()
       // Speak response
-      readResponse("This is the response from the Cohere API")
-      reset();
+      sendOrder(finalTranscript);
+      toggleStartStop();
+      // readResponse("This is the response from the Cohere API")
     }
   }
   
@@ -54,7 +59,6 @@ socket.on('receive_requests', function(data) {
   function toggleStartStop() {
     if (recognizing) {
       recognition.stop();
-      sendOrder();
       reset();
     } else {
       recognition.start();
@@ -71,13 +75,11 @@ socket.on('receive_requests', function(data) {
     synth.speak(utterance);
   }
   
-  function sendOrder() {
-    console.log(document.getElementById("finalOutput").textContent)
-    const apiUrl = 'https://localhost:5000/sales';
-    return fetch(apiUrl, { method: 'POST', headers: {
+  function sendOrder(finalTranscript) {
+    return fetch('http://localhost:5000/sales', { method: 'POST', headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json'
-      }, body: JSON.stringify({ "message": document.getElementById("finalOutput").textContent})})
+      }, body: JSON.stringify({ "message": finalTranscript})})
       .then(response => {
         if (!response.ok) {
           throw new Error('Network response was not ok');
@@ -86,6 +88,7 @@ socket.on('receive_requests', function(data) {
       })
       .then(data => {
         document.getElementById("coResponse").innerHTML += "<br/><hr/>Response: " + data["response"];
+        readResponse(data["response"])
         return data["response"]; // Return the text data from the API
       })
       .catch(error => {
@@ -93,3 +96,8 @@ socket.on('receive_requests', function(data) {
         throw error; // Rethrow the error for further handling if needed
       });
   }
+addEventListener("keydown", function(event) {
+    if (event.key.toUpperCase() == "ENTER") {
+        toggleStartStop();
+    }
+  });

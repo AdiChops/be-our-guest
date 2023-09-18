@@ -13,10 +13,9 @@ while True:
         myData = ser.readline().decode('ascii')
         print(myData)
         if myData.strip() == "gesture":
-            break
-ser.close()
-# api call
-url = 'http://localhost:5000/ready'  # Replace with the URL you want to send the request to
+            # break
+            # api call
+            url = 'http://localhost:5000/ready'  # Replace with the URL you want to send the request to
 
-# Send a GET request
-response = requests.get(url, headers={"Content-Type": "application/json; charset=utf-8"})
+            # Send a GET request
+            response = requests.get(url, headers={"Content-Type": "application/json; charset=utf-8"})
