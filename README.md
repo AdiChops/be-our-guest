@@ -33,7 +33,7 @@ Be Our Guest offers an intuitive, user-centric ordering experience that elevates
 
 ## Future Developments
 
-- Expanding features to streamline reservations and restaurant check-in processes.
-- Integration of custom hardware directly into restaurant tables for enhanced functionality.
-- Enhancing the chatbot's empathy by recognizing returning customers and offering personalized recommendations.
-- Leveraging data from sensors and customer interactions for in-depth analytics, optimizing costs and improving metrics analysis
+- Plans to extend features for effortless reservations and check-ins are underway.
+- Integrate custom hardware directly into restaurant tables for augmented functionality.
+- The chatbot will be further refined to recognize returning customers, offering them personalized recommendations.
+- Data from sensors and customer interactions will be leveraged for comprehensive analytics, thereby optimizing costs and enhancing metric analysis.
